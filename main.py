@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, Blueprint
 
-from auth import auth
+from auth import register
 
 app = Flask(__name__)
-app.register_blueprint(auth)
+register(app)

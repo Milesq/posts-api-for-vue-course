@@ -15,7 +15,8 @@ def login():
     data = request.json
 
     if 'user' not in data or 'pass' not in data:
-        return make_response({"error": 'User name or password wasn\'t provided'}, 400)
+        return make_response({"error":
+                              'User name or password wasn\'t provided'}, 400)
 
     user, password = sqlescape(data['user']), data['pass'].encode()
 
@@ -23,7 +24,7 @@ def login():
     pass_hash = db.execute(
         f'SELECT pass FROM users WHERE name="{user}"').fetchone()
 
-    if pass_hash == None:
+    if pass_hash is None:
         return make_response({"error": "User doesn't exists"}, 401)
 
     if not checkpw(password, pass_hash[0].encode('utf-8')):

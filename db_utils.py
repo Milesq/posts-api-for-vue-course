@@ -8,8 +8,10 @@ with open('setup.sql', 'r') as f:
 
 def get_db():
     db = sqlite3.connect(DB_FILE)
-    table = db.execute(
-        "SELECT count(name) FROM sqlite_master WHERE type='table' AND name='users'")
+    table = db.execute("""
+        SELECT count(name)
+        FROM sqlite_master
+        WHERE type='table' AND name='users'""")
 
     if table.fetchone()[0] != 1:
         db.executescript(DB_SETUP)

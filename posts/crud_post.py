@@ -1,9 +1,8 @@
-from textwrap import dedent
-
 from flask import Blueprint, request, make_response, redirect
 
 from db_utils import get_db
 from auth import auth
+from util import have
 
 crud = Blueprint('crud', __name__)
 
@@ -13,18 +12,19 @@ crud = Blueprint('crud', __name__)
 def create_post():
     data = request.json
 
-    if data is None or any([name not in data for name in ['title', 'content']]):
-        return make_response({"error": 'Title or content wasn\'t provided'}, 400)
+    if not have(data, ['title', 'content']):
+        return make_response({"error":
+                              'Title or content wasn\'t provided'}, 400)
 
     db = get_db()
-    db.execute(dedent(f"""
+    db.execute(f"""
         INSERT INTO posts(author, title, content)
         VALUES (
             {auth.current_user()},
             "{data["title"]}",
             "{data["content"]}"
         )
-    """))
+    """)
     db.commit()
 
     return {'data': True}
@@ -65,13 +65,17 @@ def read_post(n):
 @auth.login_required
 def read_n_posts(n_min, n_max):
     if n_min > n_max:
-        return make_response({"error": "Min must be less or equal tham max"}, 400)
+        return make_response({"error":
+                              "Min must be less or equal tham max"}, 400)
     elif n_min == n_max:
         return redirect(f'/posts/{n_max}')
 
     db = get_db()
-    posts = db.execute(
-        f'SELECT author, title, content FROM posts WHERE id>={n_min} AND id<={n_max}')
+    posts = db.execute(f'''
+        SELECT author, title, content
+        FROM posts
+        WHERE id>={n_min} AND id<={n_max}
+    ''')
 
     posts = [add_author_info(db, post) for post in posts.fetchall()]
 

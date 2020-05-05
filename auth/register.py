@@ -17,12 +17,14 @@ def register():
     data = request.json
 
     if 'user' not in data or 'pass' not in data:
-        return make_response({"error": 'User name or password wasn\'t provided'}, 400)
+        return make_response({"error":
+                              'User name or password wasn\'t provided'}, 400)
 
     user, password = data['user'], data['pass']
 
     if len(user) < 4 or len(password) < 6:
-        return make_response({"error": 'User name or password is too short'}, 400)
+        return make_response({"error":
+                              'User name or password is too short'}, 400)
 
     password = bcrypt.hashpw(password.encode(), bcrypt.gensalt(14)).decode()
 
@@ -39,7 +41,7 @@ def save_user(name: str, passwd: str):
     db = get_db()
     user = db.execute(f'SELECT name FROM users WHERE name="{name}"')
 
-    if user.fetchone() == None:
+    if user.fetchone() is None:
         db.execute(
             f'INSERT INTO users (name, pass) VALUES ("{name}", "{passwd}")')
         db.commit()

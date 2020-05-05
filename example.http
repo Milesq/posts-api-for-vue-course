@@ -16,9 +16,17 @@ Content-Type: application/json
     "pass": "zaq1@WSX"
 }
 ###
+GET /posts/count HTTP/1.1
+Host: localhost:5000
+###
 GET /posts HTTP/1.1
 Host: localhost:5000
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiTWlsb3N6In0.uoGGLFx8PLrCA9-4hGpBhlD8FfyXjl8hDGP2Qui4OdM
 ###
-GET /posts/count HTTP/1.1
+GET /posts/1 HTTP/1.1
 Host: localhost:5000
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiTWlsb3N6In0.uoGGLFx8PLrCA9-4hGpBhlD8FfyXjl8hDGP2Qui4OdM
+###
+GET /posts/1-2 HTTP/1.1
+Host: localhost:5000
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiTWlsb3N6In0.uoGGLFx8PLrCA9-4hGpBhlD8FfyXjl8hDGP2Qui4OdM

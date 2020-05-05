@@ -1,9 +1,35 @@
+from textwrap import dedent
+
 from flask import Blueprint, request, make_response, redirect
 
 from db_utils import get_db
 from auth import auth
 
 crud = Blueprint('crud', __name__)
+
+
+@crud.route('/create', methods=['POST'])
+@auth.login_required
+def create_post():
+    data = request.json
+
+    if data is None or any([name not in data for name in ['title', 'content']]):
+        return make_response({"error": 'Title or content wasn\'t provided'}, 400)
+
+    db = get_db()
+    db.execute(dedent(f"""
+        INSERT INTO posts(author, title, content)
+        VALUES (
+            {auth.current_user()},
+            "{data["title"]}",
+            "{data["content"]}"
+        )
+    """))
+    db.commit()
+
+    return {'data': True}
+
+
 @crud.route('/count')
 def get_count():
     db = get_db()

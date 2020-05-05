@@ -40,7 +40,8 @@ def save_user(name: str, passwd: str):
     user = db.execute(f'SELECT name FROM users WHERE name="{name}"')
 
     if user.fetchone() == None:
-        db.execute(f'INSERT INTO users VALUES ("{name}", "{passwd}")')
+        db.execute(
+            f'INSERT INTO users (name, pass) VALUES ("{name}", "{passwd}")')
         db.commit()
         db.close()
     else:

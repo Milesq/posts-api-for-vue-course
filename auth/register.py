@@ -1,7 +1,6 @@
 import bcrypt
-from base64 import b64encode
-from hashlib import sha256
 
+from sqlescapy import sqlescape
 from flask import request, make_response, Response, Blueprint
 
 from db_utils import get_db
@@ -25,10 +24,7 @@ def register():
     if len(user) < 4 or len(password) < 6:
         return make_response({"error": 'User name or password is too short'}, 400)
 
-    password = bcrypt.hashpw(
-        b64encode(sha256(password.encode()).digest()),
-        bcrypt.gensalt()
-    )
+    password = bcrypt.hashpw(password.encode(), bcrypt.gensalt(14))
 
     try:
         save_user(user, password)
@@ -39,6 +35,7 @@ def register():
 
 
 def save_user(name: str, passwd: str):
+    name, passwd = sqlescape(name), passwd
     db = get_db()
     user = db.execute(f'SELECT name FROM users WHERE name="{name}"')
 

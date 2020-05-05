@@ -1,6 +1,9 @@
+import os
+
 from flask import request, Blueprint, make_response
 from sqlescapy import sqlescape
 from bcrypt import checkpw
+import jwt
 
 from db_utils import get_db
 
@@ -26,4 +29,7 @@ def login():
     if not checkpw(password, pass_hash[0].encode('utf-8')):
         return make_response({"error": "Password is incorrect"}, 401)
 
-    return {"token": "secret"}
+    secret = os.getenv('PRIVATE_KEY')
+    encoded_jwt = jwt.encode({'user': user}, secret, algorithm='HS256')
+
+    return {"token": encoded_jwt.decode()}

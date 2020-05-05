@@ -3,15 +3,14 @@ from itertools import count
 from flask import Blueprint, request, make_response
 
 from db_utils import get_db
+from auth import auth
 
 crud = Blueprint('crud', __name__)
 
 
 @crud.route('/')
+@auth.login_required
 def read_posts():
-    if request.headers['Authorization'] != 'secret':
-        return make_response({"error": "Bad token"}, 401)
-
     db = get_db()
     posts = db.execute('SELECT author, title, content FROM posts').fetchall()
 

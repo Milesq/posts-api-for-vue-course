@@ -31,7 +31,7 @@ def register():
     except RegisterException as err:
         return {"error": str(err)}
 
-    return {"token": "secret"}
+    return {"data": True}
 
 
 def save_user(name: str, passwd: str):

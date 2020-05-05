@@ -24,7 +24,7 @@ def register():
     if len(user) < 4 or len(password) < 6:
         return make_response({"error": 'User name or password is too short'}, 400)
 
-    password = bcrypt.hashpw(password.encode(), bcrypt.gensalt(14))
+    password = bcrypt.hashpw(password.encode(), bcrypt.gensalt(14)).decode()
 
     try:
         save_user(user, password)
@@ -35,12 +35,13 @@ def register():
 
 
 def save_user(name: str, passwd: str):
-    name, passwd = sqlescape(name), passwd
+    name = sqlescape(name)
     db = get_db()
     user = db.execute(f'SELECT name FROM users WHERE name="{name}"')
 
     if user.fetchone() == None:
         db.execute(f'INSERT INTO users VALUES ("{name}", "{passwd}")')
         db.commit()
+        db.close()
     else:
         raise RegisterException('User already exists')

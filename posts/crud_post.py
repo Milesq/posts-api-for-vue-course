@@ -26,3 +26,11 @@ def read_posts():
         }
 
     return {"posts": posts}
+
+
+@crud.route('/count')
+def get_count():
+    db = get_db()
+    posts = db.execute('SELECT count(*) from posts').fetchone()
+
+    return str(posts[0])

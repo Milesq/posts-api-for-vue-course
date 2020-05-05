@@ -17,5 +17,8 @@ Content-Type: application/json
 }
 ###
 GET /posts HTTP/1.1
-Host: ff21e930.ngrok.io
+Host: localhost:5000
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiTWlsb3N6In0.uoGGLFx8PLrCA9-4hGpBhlD8FfyXjl8hDGP2Qui4OdM
+###
+GET /posts/count HTTP/1.1
+Host: localhost:5000

@@ -11,3 +11,6 @@ app = Flask(__name__)
 CORS(app)
 auth_blueprint(app)
 posts_blueprint(app)
+
+if __name__ == '__main__':
+    app.run()

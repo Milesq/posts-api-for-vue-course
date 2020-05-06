@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from flask import Blueprint, request, make_response, redirect
 
 from db_utils import get_db
@@ -16,13 +18,29 @@ def create_post():
         return make_response({"error":
                               'Title or content wasn\'t provided'}, 400)
 
+    date_format = '%y-%m-%d %H:%M'
     db = get_db()
+    latest_post = db.execute(f'''
+        SELECT created_at
+        FROM posts
+        WHERE author={auth.current_user()}
+        ORDER BY created_at DESC
+        LIMIT 1
+    ''').fetchone()[0]
+
+    ten_minutes = timedelta(minutes=10)
+
+    if datetime.now() - datetime.strptime(latest_post, date_format) < ten_minutes:
+        return {"error": "You can public only one post for each ten minutes"}
+
+    now = datetime.now().strftime(date_format)
     db.execute(f"""
-        INSERT INTO posts(author, title, content)
+        INSERT INTO posts(author, title, content, created_at)
         VALUES (
             {auth.current_user()},
             "{data["title"]}",
-            "{data["content"]}"
+            "{data["content"]}",
+            "{now}"
         )
     """)
     db.commit()

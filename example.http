@@ -16,6 +16,10 @@ Content-Type: application/json
     "pass": "zaq1@WSX"
 }
 ###
+DELETE /posts/delete/1 HTTP/1.1
+Host: localhost:5000
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiTWlsb3N6In0.uoGGLFx8PLrCA9-4hGpBhlD8FfyXjl8hDGP2Qui4OdM
+###
 POST /posts/create HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json

@@ -9,6 +9,14 @@ from util import have
 crud = Blueprint('crud', __name__)
 
 
+@crud.route('/delete/<int:post_id>', methods=['DELETE'])
+@auth.login_required
+def delete_post(post_id):
+    db = get_db()
+    db.execute(f'DELETE FROM posts WHERE id = {post_id}')
+    return {'data': True}
+
+
 @crud.route('/create', methods=['POST'])
 @auth.login_required
 def create_post():

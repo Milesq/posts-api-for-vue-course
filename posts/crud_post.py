@@ -13,7 +13,7 @@ crud = Blueprint('crud', __name__)
 @auth.login_required
 def delete_post(post_id):
     db = get_db()
-    db.execute(f'DELETE FROM posts WHERE id = {post_id}')
+    db.execute(f'DELETE FROM posts WHERE id={post_id}')
     return {'data': True}
 
 

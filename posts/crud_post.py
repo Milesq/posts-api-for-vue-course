@@ -11,11 +11,11 @@ import uuid0
 crud = Blueprint('crud', __name__)
 
 
-@crud.route('/delete/<int:post_id>', methods=['DELETE'])
+@crud.route('/delete/<int:post_uuid>', methods=['DELETE'])
 @auth.login_required
-def delete_post(post_id):
+def delete_post(post_uuid):
     db = get_db()
-    db.execute(f'DELETE FROM posts WHERE id={post_id}')
+    db.execute(f'DELETE FROM posts WHERE uuid={post_uuid}')
     return {'data': True}
 
 
@@ -78,14 +78,15 @@ def read_posts():
     return {"posts": posts}
 
 
-@crud.route('/<int:n>')
+@crud.route('/<str:uuid>')
 @auth.login_required
-def read_post(n):
-    if n > int(get_count()):
+def read_post(uuid):
+    db = get_db()
+    uuid_bool = db.execute(f'SELECT uuid FROM posts WHERE uuid={uuid}')
+    if not uuid_bool:
         return make_response({"error": "Post doesn't exists"}, 404)
 
-    db = get_db()
-    post = db.execute(f'SELECT author, title, content FROM posts WHERE id={n}')
+    post = db.execute(f'SELECT author, title, content FROM posts WHERE uuid={uuid}')
 
     return add_author_info(db, post.fetchone())
 

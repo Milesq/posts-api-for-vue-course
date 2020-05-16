@@ -5,6 +5,8 @@ from flask import Blueprint, request, make_response, redirect
 from db_utils import get_db
 from auth import auth
 from util import have
+import uuid0
+
 
 crud = Blueprint('crud', __name__)
 
@@ -43,8 +45,9 @@ def create_post():
 
     now = datetime.now().strftime(date_format)
     db.execute(f"""
-        INSERT INTO posts(author, title, content, created_at)
+        INSERT INTO posts(uuid, author, title, content, created_at)
         VALUES (
+            {uuid0.generate()},
             {auth.current_user()},
             "{data["title"]}",
             "{data["content"]}",

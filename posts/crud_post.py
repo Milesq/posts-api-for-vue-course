@@ -1,3 +1,5 @@
+import uuid0
+
 from datetime import datetime, timedelta
 
 from flask import Blueprint, request, make_response, redirect
@@ -6,14 +8,15 @@ from db_utils import get_db
 from auth import auth
 from util import have
 
+
 crud = Blueprint('crud', __name__)
 
 
-@crud.route('/delete/<int:post_id>', methods=['DELETE'])
+@crud.route('/delete/<int:post_uuid>', methods=['DELETE'])
 @auth.login_required
-def delete_post(post_id):
+def delete_post(post_uuid):
     db = get_db()
-    db.execute(f'DELETE FROM posts WHERE id={post_id}')
+    db.execute(f'DELETE FROM posts WHERE uuid={post_uuid}')
     return {'data': True}
 
 
@@ -43,8 +46,9 @@ def create_post():
 
     now = datetime.now().strftime(date_format)
     db.execute(f"""
-        INSERT INTO posts(author, title, content, created_at)
+        INSERT INTO posts(uuid, author, title, content, created_at)
         VALUES (
+            {uuid0.generate()},
             {auth.current_user()},
             "{data["title"]}",
             "{data["content"]}",
@@ -75,16 +79,15 @@ def read_posts():
     return {"posts": posts}
 
 
-@crud.route('/<int:n>')
+@crud.route('/<str:uuid>')
 @auth.login_required
-def read_post(n):
-    if n > int(get_count()):
+def read_post(uuid):
+    db = get_db()
+    uuid_exists = db.execute(f'SELECT uuid FROM posts WHERE uuid={uuid}')
+    if not uuid_exists:
         return make_response({"error": "Post doesn't exists"}, 404)
 
-    db = get_db()
-    post = db.execute(f'SELECT author, title, content FROM posts WHERE id={n}')
-
-    return add_author_info(db, post.fetchone())
+    return add_author_info(db, uuid_exists.fetchone())
 
 
 @crud.route('/<int:n_min>-<int:n_max>')

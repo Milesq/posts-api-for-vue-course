@@ -87,9 +87,7 @@ def read_post(uuid):
     if not uuid_exists:
         return make_response({"error": "Post doesn't exists"}, 404)
 
-    post = db.execute(f'SELECT author, title, content FROM posts WHERE uuid={uuid}')
-
-    return add_author_info(db, post.fetchone())
+    return add_author_info(db, uuid_exists.fetchone())
 
 
 @crud.route('/<int:n_min>-<int:n_max>')

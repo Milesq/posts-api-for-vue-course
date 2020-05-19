@@ -1,3 +1,5 @@
+import uuid0
+
 from datetime import datetime, timedelta
 
 from flask import Blueprint, request, make_response, redirect
@@ -5,7 +7,6 @@ from flask import Blueprint, request, make_response, redirect
 from db_utils import get_db
 from auth import auth
 from util import have
-import uuid0
 
 
 crud = Blueprint('crud', __name__)

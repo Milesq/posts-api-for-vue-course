@@ -83,8 +83,8 @@ def read_posts():
 @auth.login_required
 def read_post(uuid):
     db = get_db()
-    uuid_bool = db.execute(f'SELECT uuid FROM posts WHERE uuid={uuid}')
-    if not uuid_bool:
+    uuid_exists = db.execute(f'SELECT uuid FROM posts WHERE uuid={uuid}')
+    if not uuid_exists:
         return make_response({"error": "Post doesn't exists"}, 404)
 
     post = db.execute(f'SELECT author, title, content FROM posts WHERE uuid={uuid}')

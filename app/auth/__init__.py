@@ -4,7 +4,6 @@ from flask import current_app as app
 from flask_httpauth import HTTPTokenAuth
 import jwt
 
-# from db_utils import get_db
 from .register import register_routes
 from .login import login_routes
 

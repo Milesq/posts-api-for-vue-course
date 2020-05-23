@@ -1,1 +1,1 @@
-pycodestyle main.py db_utils.py auth posts
+pycodestyle main.py auth posts

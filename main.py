@@ -1,16 +1,12 @@
-from flask import Flask, Blueprint
-from flask_cors import CORS
+from os import path
+
 from dotenv import load_dotenv
 
-from auth import register as auth_blueprint, auth
-from posts import register as posts_blueprint
+from config import basedir
+from app import app
 
-load_dotenv()
+load_dotenv(path.join(basedir, '.env'))
 
-app = Flask(__name__)
-CORS(app)
-auth_blueprint(app)
-posts_blueprint(app)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

@@ -7,6 +7,8 @@ db = SQLAlchemy()
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
+    serialize_only = ('name',)
+
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.String(16), unique=True, nullable=False)
@@ -19,6 +21,8 @@ class User(db.Model, SerializerMixin):
 
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
+
+    serialize_rules = ('-id', '-author_id')
 
     id = db.Column(db.Integer, primary_key=True)
 

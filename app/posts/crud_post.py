@@ -43,12 +43,9 @@ def get_count():
     return str(Post.query.count())
 
 
-# @crud.route('/')
-# @auth.login_required
-# def read_posts():
-#     db = get_db()
-#     posts = db.execute('SELECT author, title, content FROM posts').fetchall()
+@crud.route('/')
+@auth.login_required
+def read_posts():
+    posts = [post.to_dict() for post in Post.query.all()]
 
-#     posts = [add_author_info(db, post) for post in posts]
-
-#     return {"posts": posts}
+    return {"posts": posts}

@@ -26,8 +26,6 @@ class Post(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    uuid = db.Column(db.String(36), unique=True, nullable=False)
-
     title = db.Column(db.String(76), nullable=False)
 
     content = db.Column(db.Text, nullable=False)

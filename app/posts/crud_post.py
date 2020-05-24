@@ -1,9 +1,8 @@
-import uuid0
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response, redirect
 
 from ..auth import auth
-from ..models import db, Post, User
+from ..models import db, Post
 from util import have
 
 
@@ -27,7 +26,6 @@ def create_post():
         return {"error": "You can public only one post for each ten minutes"}
 
     new_post = Post(
-        uuid=str(uuid0.generate()),
         title=data["title"],
         content=data["content"],
         created_at=now
@@ -49,3 +47,37 @@ def read_posts():
     posts = [post.to_dict() for post in Post.query.all()]
 
     return {"posts": posts}
+
+
+@crud.route('/<int:n>')
+@auth.login_required
+def read_post(n):
+    return Post.query.filter_by(id=n).first().to_dict()
+
+
+@crud.route('/<int:n_min>-<int:n_max>')
+@auth.login_required
+def read_n_posts(n_min, n_max):
+    if n_min > n_max:
+        return make_response({"error":
+                              "Min must be less or equal tham max"}, 400)
+    elif n_min == n_max:
+        return redirect(f'/posts/{n_max}')
+
+    posts = Post.query.filter(Post.id >= n_min).filter(Post.id <= n_max).all()
+    posts = [post.to_dict() for post in posts]
+
+    return {"posts": posts}
+
+
+@crud.route('/delete/<int:post_id>', methods=['DELETE'])
+@auth.login_required
+def delete_post(post_id):
+    post = Post.query.filter_by(id=post_id).one()
+
+    if post.author == auth.current_user():
+        db.session.delete(post)
+        db.session.commit()
+        return {'data': True}
+
+    return make_response({"error": "Access denied"}, 401)

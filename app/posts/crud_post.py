@@ -11,6 +11,7 @@ crud = Blueprint('crud', __name__)
 
 @crud.route('/create', methods=['POST'])
 @auth.login_required
+@limiter.limit('20/hour')
 def create_post():
     data = request.json
 

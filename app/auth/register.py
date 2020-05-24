@@ -4,6 +4,7 @@ from sqlescapy import sqlescape
 from flask import request, make_response, Response, Blueprint
 
 from ..models import db, User
+from ..limiter import limiter
 
 register_routes = Blueprint('register', __name__)
 
@@ -13,6 +14,7 @@ class RegisterException(BaseException):
 
 
 @register_routes.route('/register', methods=['POST'])
+@limiter.limit('1/minute')
 def register():
     data = request.json
 

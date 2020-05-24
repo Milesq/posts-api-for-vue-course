@@ -40,12 +40,9 @@ def create_post():
     return {'data': True}
 
 
-# @crud.route('/count')
-# def get_count():
-#     db = get_db()
-#     posts = db.execute('SELECT count(*) from posts').fetchone()
-
-#     return str(posts[0])
+@crud.route('/count')
+def get_count():
+    return str(Post.query.count())
 
 
 # @crud.route('/')

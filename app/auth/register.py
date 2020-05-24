@@ -3,7 +3,7 @@ import bcrypt
 from sqlescapy import sqlescape
 from flask import request, make_response, Response, Blueprint
 
-from db_utils import get_db
+from ..models import db, User
 
 register_routes = Blueprint('register', __name__)
 
@@ -12,7 +12,7 @@ class RegisterException(BaseException):
     pass
 
 
-@register_routes.route('/users/register', methods=['POST'])
+@register_routes.route('/register', methods=['POST'])
 def register():
     data = request.json
 
@@ -37,14 +37,11 @@ def register():
 
 
 def save_user(name: str, passwd: str):
-    name = sqlescape(name)
-    db = get_db()
-    user = db.execute(f'SELECT name FROM users WHERE name="{name}"')
+    new_user = User(name=sqlescape(name), passwd=passwd)
+    user = User.query.filter(User.name == new_user.name).first()
 
-    if user.fetchone() is None:
-        db.execute(
-            f'INSERT INTO users (name, pass) VALUES ("{name}", "{passwd}")')
-        db.commit()
-        db.close()
+    if user is None:
+        db.session.add(new_user)
+        db.session.commit()
     else:
         raise RegisterException('User already exists')

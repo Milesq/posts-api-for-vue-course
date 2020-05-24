@@ -1,16 +1,15 @@
 import os
 
+from flask import current_app as app
 from flask_httpauth import HTTPTokenAuth
 import jwt
 
-from db_utils import get_db
 from .register import register_routes
 from .login import login_routes
+from ..models import db, User
 
-
-def register(app):
-    app.register_blueprint(register_routes)
-    app.register_blueprint(login_routes)
+app.register_blueprint(register_routes, url_prefix='/users')
+app.register_blueprint(login_routes, url_prefix='/users')
 
 
 auth = HTTPTokenAuth()
@@ -23,9 +22,6 @@ def verify_token(token):
     try:
         payload = jwt.decode(token, secret, algorithms=['HS256'])
 
-        db = get_db()
-        user = payload['user']
-        user = db.execute(f'SELECT id FROM users WHERE name="{user}"')
-        return user.fetchone()[0]
+        return User.query.filter_by(name=payload['user']).first()
     except jwt.exceptions.DecodeError:
         pass

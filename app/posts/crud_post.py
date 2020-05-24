@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response, redirect
 
 from ..auth import auth
-from ..models import db, Post
+from ..models import db, Post, User
 from util import have
 
 
@@ -21,20 +21,18 @@ def create_post():
     date_format = '%y-%m-%d %H:%M'
     now = datetime.now().strftime(date_format)
     ten_minutes = timedelta(minutes=10)
-
-    latest_post = Post.query.filter_by(author=auth.current_user().id).first()
+    latest_post = auth.current_user().posts[-1]
 
     if latest_post is not None and datetime.now() - datetime.strptime(latest_post.created_at, date_format) < ten_minutes:
         return {"error": "You can public only one post for each ten minutes"}
 
     new_post = Post(
         uuid=str(uuid0.generate()),
-        author=auth.current_user().id,
         title=data["title"],
         content=data["content"],
         created_at=now
     )
-    db.session.add(new_post)
+    auth.current_user().posts.append(new_post)
     db.session.commit()
 
     return {'data': True}

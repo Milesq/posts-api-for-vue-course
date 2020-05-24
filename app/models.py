@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -16,14 +17,12 @@ class User(db.Model):
         return f'<User {self.name}>'
 
 
-class Post(db.Model):
+class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True)
 
     uuid = db.Column(db.String(36), unique=True, nullable=False)
-
-    author = db.Column(db.Integer, nullable=False)
 
     title = db.Column(db.String(76), nullable=False)
 
@@ -31,5 +30,10 @@ class Post(db.Model):
 
     created_at = db.Column(db.Text, nullable=False)
 
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                          nullable=False)
+    author = db.relationship(
+        'User', backref=db.backref('posts', lazy=True))
+
     def __repr__(self):
-        return f'<User {self.title}>'
+        return f'<Post {self.title}>'

@@ -35,6 +35,6 @@ def login():
         print('Private key is not set!!!')
         return make_response({"error": "Private key is not set"}, 500)
 
-    encoded_jwt = jwt.encode({'user': user.passwd}, secret, algorithm='HS256')
+    encoded_jwt = jwt.encode({'user': user.name}, secret, algorithm='HS256')
 
     return {"token": encoded_jwt.decode()}

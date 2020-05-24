@@ -22,7 +22,6 @@ def verify_token(token):
     try:
         payload = jwt.decode(token, secret, algorithms=['HS256'])
 
-        user = payload['user']
-        return User.query.filter_by(name=user).first()
+        return User.query.filter_by(name=payload['user']).first()
     except jwt.exceptions.DecodeError:
         pass

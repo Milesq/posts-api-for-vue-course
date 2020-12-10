@@ -1,4 +1,4 @@
-from os import path, self
+from os import path, getenv
 
 from dotenv import load_dotenv
 
@@ -8,7 +8,7 @@ load_dotenv(path.join(basedir, '.env'))
 
 from app import app
 
-print( os.name)
+env = getenv('ENV')
 
-# if __name__ == '__main__':
-#     app.run(debug=True, host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(debug=True if env is None else False, host='0.0.0.0')

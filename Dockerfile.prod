@@ -9,6 +9,6 @@ COPY . .
 
 EXPOSE 5000
 
-ENV env prod
+ENV ENV PROD
 
 CMD ["python", "main.py"]

@@ -9,6 +9,12 @@ from ..limiter import limiter
 
 crud = Blueprint('crud', __name__)
 
+def safe_list_get(l, idx, default=None):
+    try:
+        return l[idx]
+    except IndexError:
+        return default
+
 
 @crud.route('/create', methods=['POST'])
 @auth.login_required
@@ -22,7 +28,7 @@ def create_post():
     date_format = '%y-%m-%d %H:%M'
     now = datetime.now().strftime(date_format)
     ten_minutes = timedelta(minutes=10)
-    latest_post = auth.current_user().posts[-1]
+    latest_post = safe_list_get(auth.current_user().posts, -1)
 
     if latest_post is not None and datetime.now() - datetime.strptime(latest_post.created_at, date_format) < ten_minutes:
         return {"error": "You can public only one post for each ten minutes"}

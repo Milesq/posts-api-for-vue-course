@@ -3,9 +3,11 @@ from os import path
 from dotenv import load_dotenv
 
 from config import basedir
-from app import app
 
 load_dotenv(path.join(basedir, '.env'))
+
+from app import app
+
 
 
 if __name__ == '__main__':
